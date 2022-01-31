@@ -7,6 +7,17 @@ import {globalIdField, connectionDefinitions, toGlobalId} from 'graphql-relay';
 import {v4 as uuid} from 'uuid';
 import {SimpleError} from '../../errors';
 
+
+//Klaviyo Accounts types.
+types.KlaviyoAccounts = new graphql.GraphQLObjectType({
+	name: 'KlaviyoAccounts',
+	fields:{
+		account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
+		public_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
+		private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
+	}
+});
+
 types.Record = new graphql.GraphQLObjectType({
 	name: 'Record',
 	fields:{

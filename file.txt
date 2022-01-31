@@ -1,0 +1,96 @@
+import {
+ Button,
+ Pane,
+ Dialog,
+ TextInputField,
+
+}from 'evergreen-ui';
+
+
+interface Credentials {
+  api_key: string;
+  secret_key: string;
+  order_name?: string;
+}
+//klaviyo model
+function LightfunnelsPopUp(){
+   const [isShown,setIsShown] = useState(false);
+   const ToggelShowPopUp = (e)=>{
+       e.preventDefault();
+       setIsShown(!isShown);
+   }
+   const [credentials,setCredentials] = useState<Credentials>({
+   	 api_key : '',
+   	 secret_key: '',
+   	 order_name: '',
+   });
+   const [isLoading,setIsLoading] = useState(false);
+   const handleChange = (e)=>{
+    	e.preventDefault();
+   	  const { name,value } = e.target;
+   	  setCredentials({...credentials,[name]:value});
+   }
+   const handleSubmit = (e)=>{
+
+     e.preventDefault();
+     setIsLoading(!isLoading);
+     console.log('is loading :)');
+     const [connectResponse, loading] = useMutation<tsConnectRespMutation>(
+		  graphql`
+				mutation tsConnectRespMutation($query: String!){
+					connectShopifyResponse(query: $query) {
+						id
+	  				klaviyo_accounts {
+							_id
+							id
+	  					klaviyo_account
+						}
+					}
+				}
+			`
+	  );
+     //make a query here
+   }
+   const { api_key,secret_key,order_name } = credentials;
+   console.log(api_key,secret_key,order_name);
+	return(
+		<>	
+			<Pane>
+         <Dialog
+	        isShown={isShown}
+	        title="KLAVIYO CREDENTAILS"
+	        onCloseComplete={() => setIsShown(false)}
+	        hasFooter={false}
+	        >
+	       <form onSubmit = {handleSubmit} id = "kaliviyo_form"> 
+		       <TextInputField
+						  required
+						  label="A required Order Name"
+						  description="please enter your order name."
+						  name = "order_name"
+						  onChange = {handleChange}
+						  value = {order_name}
+						/> 
+	         <TextInputField
+						  required
+						  label="A required API Key"
+						  description="please enter your api_key."
+						  name = "api_key"
+						  onChange = {handleChange}
+						  value = {api_key}
+						/>
+						<TextInputField
+						  required
+						  label="A required API Secret"
+						  description="please enter your api_secret."
+						  name = "secret_key"
+						  onChange = {handleChange}
+						  value = {secret_key}
+						/>
+						<Button  appearance = "primary" type="submit"  intent="success" isLoading = {isLoading} >submit</Button>
+					</form> 
+         </Dialog>
+         <Button marginRight={23} appearance="primary" onClick={ToggelShowPopUp}>Add New</Button>
+        </Pane>
+       </>
+       )

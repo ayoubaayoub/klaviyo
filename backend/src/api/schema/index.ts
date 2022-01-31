@@ -3,6 +3,7 @@ import * as graphql from 'graphql';
 import {forwardConnectionArgs} from 'graphql-relay';
 
 import {connectShopifyUrl, connectShopifyResponse} from './shopify';
+import { connectKlaviyoUrl }  from './klaviyo';
 import {account} from './accounts';
 import {
   records,
@@ -11,6 +12,7 @@ import {
   deleteConnection,
   funnels,
   funnelsList,
+  KlaviyoAccounts,
 } from './resources';
 
 const Query = new graphql.GraphQLObjectType({
@@ -45,10 +47,15 @@ const Query = new graphql.GraphQLObjectType({
         ids: {type: graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(graphql.GraphQLInt)))}
       },
       resolve: funnelsList
+    },
+    klaviyo_accounts:{
+      type: graphql.GraphQLNonNull(graphql.GraphQLList(types.KlaviyoAccounts)),
+      resolve: KlaviyoAccounts
     }
   })
 });
 
+//make change here to generate new schema.graphql
 const Mutation = new graphql.GraphQLObjectType({
   name: "Mutation",
   fields: () => ({
@@ -73,6 +80,14 @@ const Mutation = new graphql.GraphQLObjectType({
         id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)}
       },
       resolve: deleteConnection
+    },
+    //klaviyo mutation
+    createKlaviyoResponse: {
+      type: graphql.GraphQLNonNull(types.Account),
+      args:{
+        query: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
+        resolve: connectKlaviyoUrl
+      }
     }
   })
 });
