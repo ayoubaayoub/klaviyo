@@ -3,7 +3,7 @@ import * as graphql from 'graphql';
 import {forwardConnectionArgs} from 'graphql-relay';
 
 import {connectShopifyUrl, connectShopifyResponse} from './shopify';
-import { connectKlaviyoUrl }  from './klaviyo';
+import { connectKlaviyoAccount }  from './klaviyo';
 import {account} from './accounts';
 import {
   records,
@@ -12,12 +12,16 @@ import {
   deleteConnection,
   funnels,
   funnelsList,
-  KlaviyoAccounts,
+  klaviyoAccounts,
 } from './resources';
 
 const Query = new graphql.GraphQLObjectType({
   name: "Query",
   fields: () => ({
+    klaviyo_accounts:{
+      type: graphql.GraphQLNonNull(graphql.GraphQLList(types.KlaviyoAccounts)),
+      resolve: klaviyoAccounts
+    },
     records:{
       type: graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(types.Record))),
       args:{
@@ -47,11 +51,8 @@ const Query = new graphql.GraphQLObjectType({
         ids: {type: graphql.GraphQLNonNull(graphql.GraphQLList(graphql.GraphQLNonNull(graphql.GraphQLInt)))}
       },
       resolve: funnelsList
-    },
-    klaviyo_accounts:{
-      type: graphql.GraphQLNonNull(graphql.GraphQLList(types.KlaviyoAccounts)),
-      resolve: KlaviyoAccounts
     }
+    
   })
 });
 
@@ -81,13 +82,14 @@ const Mutation = new graphql.GraphQLObjectType({
       },
       resolve: deleteConnection
     },
-    //klaviyo mutation
-    createKlaviyoResponse: {
-      type: graphql.GraphQLNonNull(types.Account),
+    connectKlaviyoAccount: {
+      type: graphql.GraphQLNonNull(types.KlaviyoAccounts),
       args:{
-        query: { type: graphql.GraphQLNonNull(graphql.GraphQLString) },
-        resolve: connectKlaviyoUrl
-      }
+        account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
+        public_api_key : {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
+        private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
+      },
+      resolve: connectKlaviyoAccount
     }
   })
 });

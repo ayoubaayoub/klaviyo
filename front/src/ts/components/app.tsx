@@ -17,6 +17,7 @@ import {
 	loadQuery,
 	usePreloadedQuery,
 } from 'react-relay';
+import type {appConnectKlaviyoMutation} from './__generated__/appConnectKlaviyoMutation.graphql';
 
 export function Modal(props) {
   return !(props.active === false) ? (
@@ -62,7 +63,7 @@ export function SubmodalContent(props) {
 }
 
 interface Credentials {
-  api_key: string;
+  public_api_key: string;
   secret_key: string;
   order_name?: string;
 }
@@ -71,35 +72,47 @@ function LightfunnelsPopUp(){
    const [isShown,setIsShown] = useState(false);
    const ToggelShowPopUp = (e)=>{
        e.preventDefault();
-       //create a mutation query.
-       
-
-
        setIsShown(!isShown);
    }
    const [credentials,setCredentials] = useState<Credentials>({
-   	 api_key : '',
+   	 public_api_key : '',
    	 secret_key: '',
    	 order_name: '',
    });
-   const [isLoading,setIsLoading] = useState(false);
    const handleChange = (e)=>{
     	e.preventDefault();
    	  const { name,value } = e.target;
    	  setCredentials({...credentials,[name]:value});
    }
+   const [connect, isLoading] = useMutation<appConnectKlaviyoMutation>(
+      graphql`
+        mutation appConnectKlaviyoMutation($account_id: Int!, $public_api_key: String!, $private_api_key: String!){
+        connectKlaviyoAccount(account_id: $account_id,public_api_key:$public_api_key,private_api_key:$private_api_key){
+          account_id
+          public_api_key
+          private_api_key
+        }
+      }
+   `);
+   const { public_api_key,secret_key,order_name } = credentials;
    const handleSubmit = (e)=>{
-
      e.preventDefault();
-     setIsLoading(!isLoading);
-     console.log('is loading :)');
-     setTimeout(()=>{
-     	setIsLoading(false);
-     },3000);
-     //make a query here
+     var account_id = 1;
+
+     var   private_api_key = 'sdhsdh673bhy8wru';
+     connect({
+      variables:{
+        account_id,
+        public_api_key,
+        private_api_key
+      }
+     })
+     console.log(isLoading)
    }
-   const { api_key,secret_key,order_name } = credentials;
-   console.log(api_key,secret_key,order_name);
+   
+
+   console.log(public_api_key,secret_key,order_name);
+   //make a query here.
 	return(
 		<>	
 			<Pane>
@@ -121,10 +134,10 @@ function LightfunnelsPopUp(){
 	         <TextInputField
 						  required
 						  label="A required API Key"
-						  description="please enter your api_key."
-						  name = "api_key"
+						  description="please enter your public_api_key."
+						  name = "public_api_key"
 						  onChange = {handleChange}
-						  value = {api_key}
+						  value = {public_api_key}
 						/>
 						<TextInputField
 						  required
@@ -143,8 +156,6 @@ function LightfunnelsPopUp(){
        </>
        )
 }
-
-
 const App = (props)=>{
 	return (
 		<div className="app">

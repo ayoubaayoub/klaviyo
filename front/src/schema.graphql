@@ -1,4 +1,5 @@
 type Query {
+  klaviyo_accounts: [KlaviyoAccounts]!
   records(offset: Int): [Record!]!
   connections: [Connection!]!
   account: Account!
@@ -12,7 +13,12 @@ type Query {
     first: Int
   ): FunnelConnection!
   funnelsList(ids: [Int!]!): [Funnel]!
-  klaviyo_accounts: [KlaviyoAccounts]!
+}
+
+type KlaviyoAccounts {
+  account_id: Int!
+  public_api_key: String!
+  private_api_key: String!
 }
 
 type Record {
@@ -90,18 +96,12 @@ type FunnelEdge {
   cursor: String!
 }
 
-type KlaviyoAccounts {
-  account_id: Int!
-  public_api_key: String!
-  private_api_key: String!
-}
-
 type Mutation {
   connectShopifyUrl(shop: String!, redirectUri: String!): String!
   connectShopifyResponse(query: String!): Account!
   createConnection(node: ConnectionInput!): Connection!
   deleteConnection(id: Int!): ID
-  createKlaviyoResponse(query: String!, resolve: undefined): Account!
+  connectKlaviyoAccount(account_id: Int!, public_api_key: String!, private_api_key: String!): KlaviyoAccounts!
 }
 
 input ConnectionInput {

@@ -6,17 +6,8 @@ import Joi from '../../joi';
 import {globalIdField, connectionDefinitions, toGlobalId} from 'graphql-relay';
 import {v4 as uuid} from 'uuid';
 import {SimpleError} from '../../errors';
+ 
 
-
-//Klaviyo Accounts types.
-types.KlaviyoAccounts = new graphql.GraphQLObjectType({
-	name: 'KlaviyoAccounts',
-	fields:{
-		account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
-		public_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
-		private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
-	}
-});
 
 types.Record = new graphql.GraphQLObjectType({
 	name: 'Record',
@@ -25,6 +16,15 @@ types.Record = new graphql.GraphQLObjectType({
 		order_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
 		shopify_order_id: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
 		created_at: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
+	}
+});
+
+types.KlaviyoAccounts = new graphql.GraphQLObjectType({
+	name: 'KlaviyoAccounts',
+	fields:{
+		account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
+		public_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
+		private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
 	}
 });
 
@@ -80,6 +80,15 @@ const {connectionType} = connectionDefinitions({
 });
 
 types.FunnelsConnection = connectionType;
+
+export async function klaviyoAccounts(_,args, ctx:ApiContext){
+const { public_api_key } = args;
+  const data = await  knex.select('*')
+		       .table('klaviyo_accounts')
+		       .where('public_api_key',public_api_key)
+		       .first();
+  return data;
+}
 
 export function funnelsList(_, args, ctx: ApiContext){
 	return ctx.loaders.Funnel.loadMany(args.ids);
@@ -157,7 +166,7 @@ export async function createConnection(_, args, ctx: ApiContext){
 
 	let [shResp, lfResp] = await Promise.all([
 		ctx.loaders.Shop.load(data.shop_id).then(Boolean),
-		lightfunnels({
+		lightfunnels({		
 			token: ctx.account.lightfunnelsToken,
 			data:{
 				query:`
@@ -225,8 +234,6 @@ export async function createConnection(_, args, ctx: ApiContext){
 }
 
 export function deleteConnection(_, args, ctx: ApiContext){
-
-
 	return (
 		knex.transaction(
 			async function(trx){
