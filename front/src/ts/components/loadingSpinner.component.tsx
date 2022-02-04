@@ -6,9 +6,9 @@ import {
 const LoadingSpinner = ()=>{
 	return(
        <div>
-       <Pane display="flex" alignItems="center" justifyContent="center" height={400}>
+        <Pane display="flex" alignItems="center" justifyContent="center" height={400}>
           <Spinner />
-         </Pane>
+        </Pane>
        </div>
 		)
 }

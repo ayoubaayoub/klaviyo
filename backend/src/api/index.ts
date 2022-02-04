@@ -22,7 +22,7 @@ export async function handler(event: APIGatewayProxyEventV2, ctx: Context): Prom
 		let {variables, query, operationName} = JSON.parse(event.body);
 
 		const accountID = (event.requestContext.authorizer! as any).lambda.acid;
-
+        // console.log(accountID)
 		let row = await knex.table('accounts')
 			// here we use the app's ids, because it how we generated the token
 			// check lightfunnels function

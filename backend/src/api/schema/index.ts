@@ -55,7 +55,7 @@ const Query = new graphql.GraphQLObjectType({
     
   })
 });
-
+ 
 //make change here to generate new schema.graphql
 const Mutation = new graphql.GraphQLObjectType({
   name: "Mutation",
@@ -83,11 +83,11 @@ const Mutation = new graphql.GraphQLObjectType({
       resolve: deleteConnection
     },
     connectKlaviyoAccount: {
-      type: graphql.GraphQLNonNull(types.KlaviyoAccounts),
+      type: new graphql.GraphQLNonNull(types.KlaviyoAccounts),
       args:{
-        account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
-        public_api_key : {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
-        private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
+        account_id: {type: new graphql.GraphQLNonNull(graphql.GraphQLInt)},
+        public_api_key : {type: new graphql.GraphQLNonNull(graphql.GraphQLString)},
+        private_api_key: {type: new graphql.GraphQLNonNull(graphql.GraphQLString)}
       },
       resolve: connectKlaviyoAccount
     }

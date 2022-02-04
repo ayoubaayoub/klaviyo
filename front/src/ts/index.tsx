@@ -1,7 +1,7 @@
 import React, {Suspense, Fragment, useState} from 'react';
 import {render} from 'react-dom';
 import store from 'store';
-import { Middleware } from './components/middleware';
+import { Middleware } from './middleware/middleware.component';
 import {
 	Router,
 	Route,
@@ -66,8 +66,8 @@ function Redirect(props) {
 
 	return (
 		<div className="redirect">
-      <LoadingSpinner />
-	  </div>
+           <LoadingSpinner />
+	    </div>
 	)
 }
 

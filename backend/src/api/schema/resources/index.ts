@@ -6,26 +6,29 @@ import Joi from '../../joi';
 import {globalIdField, connectionDefinitions, toGlobalId} from 'graphql-relay';
 import {v4 as uuid} from 'uuid';
 import {SimpleError} from '../../errors';
- 
-
+const {
+	GraphQLNonNull,
+	GraphQLInt,
+	GraphQLString,
+} = graphql;
 
 types.Record = new graphql.GraphQLObjectType({
 	name: 'Record',
 	fields:{
-		payment_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
-		order_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
-		shopify_order_id: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
-		created_at: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
+		payment_id: {type: new GraphQLNonNull(GraphQLInt)},
+		order_id: {type: new GraphQLNonNull(GraphQLInt)},
+		shopify_order_id: {type: new GraphQLNonNull(GraphQLString)},
+		created_at: {type: new GraphQLNonNull(GraphQLString)},
 	}
 });
 
 types.KlaviyoAccounts = new graphql.GraphQLObjectType({
 	name: 'KlaviyoAccounts',
-	fields:{
-		account_id: {type: graphql.GraphQLNonNull(graphql.GraphQLInt)},
-		public_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)},
-		private_api_key: {type: graphql.GraphQLNonNull(graphql.GraphQLString)}
-	}
+	fields:()=>({
+		account_id: {type: new GraphQLNonNull(GraphQLInt)},
+		public_api_key: {type: new GraphQLNonNull(GraphQLString)},
+		private_api_key: {type: new GraphQLNonNull(GraphQLString)}
+	})
 });
 
 types.Connection = new graphql.GraphQLObjectType({
@@ -80,7 +83,6 @@ const {connectionType} = connectionDefinitions({
 });
 
 types.FunnelsConnection = connectionType;
-
 export async function klaviyoAccounts(_,args, ctx:ApiContext){
 const { public_api_key } = args;
   const data = await  knex.select('*')

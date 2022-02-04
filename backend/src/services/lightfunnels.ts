@@ -10,7 +10,7 @@ type Opts = {
 
 export default function call({token, data}: Opts){
   return rp({
-    url: `${process.env.LightfunnelsUrl}graphql`,
+    url: `https://api.lightfunnels.com/graphql`,
     headers: {
       'authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',

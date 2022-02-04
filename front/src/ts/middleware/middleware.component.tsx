@@ -12,10 +12,10 @@ import {
  Button,
  Pane,
 }from 'evergreen-ui';
-import LoadingSpinner from './loadingSpinner';
+import LoadingSpinner from '../components/loadingSpinner.component';
 import qs from 'qs';
 import store from 'store';
-import App from './app';
+import App from '../pages/app';
 import {
 	useLazyLoadQuery,
 	graphql,
@@ -113,7 +113,6 @@ export function Middleware(props){
 					window.location.href = resp;
 				});
 			}
-
 		},[]
 	);
 
@@ -134,7 +133,7 @@ export function Middleware(props){
 			</Relay>
 		</Suspense>
 	);
-}//end midllware
+}
 
 function installToKey(id){
 	return 'i' + id + '_token';

@@ -15,7 +15,6 @@ declare namespace NodeJS {
 		LightfunnelsAppKey: string
 		LightfunnelsAppSecret: string
 		AppURL: string
-		LightfunnelsUrl: string
 		LightfunnelsFrontUrl: string
 		DbHost: string
 		DbUser: string

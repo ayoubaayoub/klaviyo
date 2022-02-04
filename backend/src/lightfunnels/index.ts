@@ -20,14 +20,14 @@ export async function handler(event: APIGatewayProxyEventV2, ctx: Context): Prom
 	} catch (e) {}
 
 	if(path === "connect-url"){
-		body = `${process.env.LightfunnelsFrontUrl}admin/oauth?client_id=${process.env.LightfunnelsAppKey}`+
+		body = `https://app.lightfunnels.com/admin/oauth?client_id=${process.env.LightfunnelsAppKey}`+
 			`&state=${state}&redirect_uri=${eventBody.redirectUrl}&response_type=code&scope=orders,funnels&account-id=${eventBody.accountID}`;
 		statusCode = 200;
 	} else if (path === "connect-response") {
 
 		await (
 			rp({
-				uri: `${process.env.LightfunnelsUrl}oauth/access`,
+				uri: `https://api.lightfunnels.com/oauth/access`,
 				method: 'POST',
 				body:{
 					client_id: process.env.LightfunnelsAppKey,

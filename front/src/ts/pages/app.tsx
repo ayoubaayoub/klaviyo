@@ -64,7 +64,7 @@ export function SubmodalContent(props) {
 
 interface Credentials {
   public_api_key: string;
-  secret_key: string;
+  private_api_key: string;
   order_name?: string;
 }
 //klaviyo model
@@ -76,7 +76,7 @@ function LightfunnelsPopUp(){
    }
    const [credentials,setCredentials] = useState<Credentials>({
    	 public_api_key : '',
-   	 secret_key: '',
+   	 private_api_key: '',
    	 order_name: '',
    });
    const handleChange = (e)=>{
@@ -84,35 +84,36 @@ function LightfunnelsPopUp(){
    	  const { name,value } = e.target;
    	  setCredentials({...credentials,[name]:value});
    }
-   const [connect, isLoading] = useMutation<appConnectKlaviyoMutation>(
+   const [connectKlaviyo, isLoading] = useMutation<appConnectKlaviyoMutation>(
       graphql`
-        mutation appConnectKlaviyoMutation($account_id: Int!, $public_api_key: String!, $private_api_key: String!){
-        connectKlaviyoAccount(account_id: $account_id,public_api_key:$public_api_key,private_api_key:$private_api_key){
-          account_id
-          public_api_key
-          private_api_key
-        }
-      }
+        mutation appConnectKlaviyoMutation( $account_id: Int!,
+                                            $public_api_key: String!,
+                                            $private_api_key: String!
+                                            ){
+         connectKlaviyoAccount( account_id: $account_id,
+                                public_api_key:$public_api_key,
+                                private_api_key:$private_api_key
+                                ){
+                                  account_id
+                                 }
+                                }
    `);
-   const { public_api_key,secret_key,order_name } = credentials;
+   const { public_api_key, private_api_key, order_name } = credentials;
    const handleSubmit = (e)=>{
      e.preventDefault();
      var account_id = 1;
-
-     var   private_api_key = 'sdhsdh673bhy8wru';
-     connect({
-      variables:{
+     connectKlaviyo({
+      variables :{
         account_id,
         public_api_key,
         private_api_key
+      },
+      onCompleted(data){
+       console.log(data,'yes!!');
       }
-     })
-     console.log(isLoading)
+     }
+    );
    }
-   
-
-   console.log(public_api_key,secret_key,order_name);
-   //make a query here.
 	return(
 		<>	
 			<Pane>
@@ -143,9 +144,9 @@ function LightfunnelsPopUp(){
 						  required
 						  label="A required API Secret"
 						  description="please enter your api_secret."
-						  name = "secret_key"
+						  name = "private_api_key"
 						  onChange = {handleChange}
-						  value = {secret_key}
+						  value = {private_api_key}
 						/>
 						<Button  appearance = "primary" type="submit"  intent="success" isLoading = {isLoading} >submit</Button>
 					</form> 
