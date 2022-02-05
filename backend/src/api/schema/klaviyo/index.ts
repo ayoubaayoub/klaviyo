@@ -18,16 +18,29 @@ export async function connectKlaviyoAccount( _, args, ctx:ApiContext){
 
 	const { account_id, public_api_key, private_api_key } = args;
 	const uri = `https://a.klaviyo.com/api/v1/lists?api_key=${private_api_key}`;
+	
 	return klaviyo({
-		uri,
-		account_id,
-		public_api_key,
-		private_api_key
-	}).then(res=>{
-		console.log(res);
-		if(res.errors){
-			throw new SimpleError('missing_klaviyo_keys');
-		}
-		return res;
-	});
-}
+					  uri
+					}).then(async res=>{
+						if(res.errors){
+							throw new SimpleError('missing_klaviyo_keys');
+						}else if(JSON.parse(res).data.length){
+					    await knex.table('klaviyo_accounts')
+									.insert({
+										account_id,
+										public_api_key,
+										private_api_key
+									})
+									.onConflict()
+									.merge({
+										private_api_key: knex.raw('values(private_api_key)'),
+										id: knex.raw('LAST_INSERT_ID(id)')   
+									});
+					    return { 
+						  	"public_api_key" :public_api_key,
+					      "account_id" : account_id,
+					      "private_api_key": private_api_key
+					       };
+					     }
+					});
+       }

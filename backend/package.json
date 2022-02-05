@@ -25,6 +25,7 @@
     "knex": "^0.95.4",
     "mysql": "^2.18.1",
     "randomatic": "^3.1.1",
+    "react-toastify": "^8.1.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "uuid": "^8.3.2"
